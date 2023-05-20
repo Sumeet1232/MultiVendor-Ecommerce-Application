@@ -1,10 +1,12 @@
 import { React, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
 import axios from "axios";
 import { server } from "../../server.js";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -29,15 +31,21 @@ const Signup = () => {
     newForm.append("email", email);
     newForm.append("password", password);
 
-    await axios 
-      .post(`${server}/user/create-user`, newForm,config)
+    await axios
+      .post(`${server}/user/create-user`, newForm, config)
       .then((res) => {
-        if(res.data.success===true){
-          navigate("/");
+        toast.success(res.data.message);
+        setName("");
+        setEmail("");
+        setPassword("");
+        setAvatar();
+        if (res.data.success === true) {
+          navigate("/login");
         }
       })
-       .catch((err) => {
-        console.log(err);
+      .catch((err) => {
+      
+        toast.error(err.response.data.message);
       });
   };
 
